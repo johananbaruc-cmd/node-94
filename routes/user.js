@@ -11,10 +11,73 @@ import {
 
 /**
  * @swagger
- * tags:
- *   name: Users
- *   description: Gestión de usuarios
+ * components:
+ *   schemas:
+ *     User:
+ *       type: object
+ *       required:
+ *         - name
+ *         - email
+ *       properties:
+ *         _id:
+ *           type: string
+ *           example: 6841a7b1f23d4c8d9a123456
+ *         name:
+ *           type: string
+ *           example: Baruc
+ *         email:
+ *           type: string
+ *           format: email
+ *           example: baruc@gmail.com
+ *         age:
+ *           type: integer
+ *           minimum: 18
+ *           maximum: 99
+ *           example: 25
+ *         isActive:
+ *           type: boolean
+ *           example: true
+ *         roles:
+ *           type: array
+ *           items:
+ *             type: string
+ *           example:
+ *             - admin
+ *             - user
+ *         address:
+ *           type: object
+ *           properties:
+ *             street:
+ *               type: string
+ *               example: Av. Principal 123
+ *             city:
+ *               type: string
+ *               example: Toluca
+ *             zipCode:
+ *               type: string
+ *               example: 52000
+ *         birthday:
+ *           type: string
+ *           format: date
+ *           example: 2000-05-15
+ *         salary:
+ *           type: number
+ *           example: 25000.50
+ *         status:
+ *           type: string
+ *           enum:
+ *             - active
+ *             - inactive
+ *             - blocked
+ *           example: active
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
  */
+route.post('/', createUser);
 
 /**
  * @swagger
@@ -27,22 +90,16 @@ import {
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             required:
- *               - name
- *               - email
- *             properties:
- *               name:
- *                 type: string
- *                 example: Baruc
- *               email:
- *                 type: string
- *                 example: baruc@gmail.com
+ *             $ref: '#/components/schemas/User'
  *     responses:
  *       201:
  *         description: Usuario creado correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
  */
-route.post('/', createUser);
+route.get('/', getUsers);
 
 /**
  * @swagger
@@ -53,8 +110,14 @@ route.post('/', createUser);
  *     responses:
  *       200:
  *         description: Lista de usuarios
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/User'
  */
-route.get('/', getUsers);
+route.get('/:id', getUserById);
 
 /**
  * @swagger
@@ -68,14 +131,17 @@ route.get('/', getUsers);
  *         required: true
  *         schema:
  *           type: string
- *         example: 6840b7f0d123456789abcdef
  *     responses:
  *       200:
  *         description: Usuario encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
  *       404:
  *         description: Usuario no encontrado
  */
-route.get('/:id', getUserById);
+route.put('/:id', updateUser);
 
 /**
  * @swagger
@@ -94,22 +160,14 @@ route.get('/:id', getUserById);
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *                 example: Juan Pérez
- *               email:
- *                 type: string
- *                 example: juan@gmail.com
+ *             $ref: '#/components/schemas/User'
  *     responses:
  *       200:
  *         description: Usuario actualizado
  *       404:
  *         description: Usuario no encontrado
  */
-route.put('/:id', updateUser);
-
+route.delete('/:id', deleteUser);
 /**
  * @swagger
  * /api/users/{id}:
@@ -120,14 +178,15 @@ route.put('/:id', updateUser);
  *       - in: path
  *         name: id
  *         required: true
+ *         description: ID del usuario
  *         schema:
  *           type: string
  *     responses:
  *       200:
- *         description: Usuario eliminado
+ *         description: Usuario eliminado correctamente
  *       404:
  *         description: Usuario no encontrado
+ *       500:
+ *         description: Error interno del servidor
  */
-route.delete('/:id', deleteUser);
-
 export default route;

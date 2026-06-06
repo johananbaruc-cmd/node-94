@@ -4,9 +4,7 @@ import User from '../models/user.js';
 export const createUser = async (req, res) => {
   try {
     const { name, email } = req.body;
-
     const user = await User.create({ name, email });
-
     return res.status(201).json({
       message: 'Usuario creado correctamente en MongoDB',
       data: user
